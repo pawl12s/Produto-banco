@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Usuários e Produtos</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a {
+            margin: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .imagem-celular {
+            max-width: 100px; /* Ajuste o tamanho da imagem conforme necessário */
+        }
+    </style>
+</head>
+<body>
+    <a href="usuarios.html">Cadastrar Usuários</a>
+    <h1>Listar Usuários</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>CPF</th>
+                <th>RG</th>
+                <th>Endereço</th>
+                <th>Estado Civil</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-usuarios">
+        </tbody>
+    </table>
+    <a href="cadastro.html">Cadastrar Produtos</a>
+    <h1>Listar Produtos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Imagem</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-produtos">
+        </tbody>
+    </table>
+    <script>
+        // Carregar dados de usuários
+        fetch("http://localhost:8001/usuarios")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const tbodyUsuarios = document.getElementById("tbody-usuarios");
+            data.forEach(usuario => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${usuario.id}</td>
+                    <td>${usuario.nome}</td>
+                    <td>${usuario.idade}</td>
+                    <td>${usuario.cpf}</td>
+                    <td>${usuario.rg}</td>
+                    <td>${usuario.endereco}</td>
+                    <td>${usuario.estado_civil}</td>
+                `;
+                tbodyUsuarios.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            alert("Erro ao carregar os dados de usuários: " + error.message);
+        });
+
+        // Carregar dados de produtos
+        fetch("http://localhost:8000/produtos")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(dadosJson => {
+            const tbodyProdutos = document.getElementById("tbody-produtos");
+            dadosJson.forEach(produto => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${produto.id}</td>
+                    <td>${produto.nome}</td>
+                    <td>${produto.descricao}</td>
+                    <td>${produto.preco}</td>
+                    <td>
+                        <img class="imagem-celular" src="${produto.imagem}" alt="Imagem do produto"/>
+                    </td>
+                `;
+                tbodyProdutos.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            alert("Erro ao carregar os dados de produtos: " + error.message);
+        });
+    </script>
+</body>
+</html>
